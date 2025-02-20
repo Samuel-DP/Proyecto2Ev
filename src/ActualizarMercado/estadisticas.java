@@ -23,8 +23,7 @@ public class estadisticas {
 		System.out.println("5. Cuantas veces ha caido BTC un 50% este año");
 		System.out.println("6. Cuantas veces ha subido BTC un 50% este año");
 		System.out.println("7. Maximo y minimo de BTC en el ultimo año");
-		System.out.println("8. Cuanto ha subido este año");
-		System.out.println("9. Volumen de transacciones de BTC en las ultimas 24h");
+		System.out.println("8. Volumen de transacciones de BTC en las ultimas 24h");
 		return sc.nextInt();
 	}
 	
@@ -71,8 +70,12 @@ public class estadisticas {
    	 	String respuesta = api.getApiData(endpoint);
         if (respuesta != null) {
         	try {
-
+        		
+        		//Para poder trabajar con los datos en Java, primero tenemos que convertir el JSON en un objeto java
+        		//Para eso usamos JsonParser de la libreria Gson
                 JsonObject jsonObject = JsonParser.parseString(respuesta).getAsJsonObject();
+                
+                //Extraemos el array prices que contiene los datos que necesitamos
                 JsonArray precios = jsonObject.getAsJsonArray("prices");
                 
                 if (precios == null || precios.size() == 0) {
@@ -82,14 +85,14 @@ public class estadisticas {
                 int caidas50 = 0;
                 double maxPrecio = 0;
 
-                // Recorrer los precios diarios
+                // Recorrer los precios diarios, dentro del array de precios tengo otros 365 elementos q en realidad son 365 arays [1703721600000, 42000.25]
                 for (JsonElement elemento : precios) {
-                    JsonArray datos = elemento.getAsJsonArray();
+                    JsonArray datos = elemento.getAsJsonArray(); //cambio el tipo de elemento a array para poder usar el get y poder extraer el precio USD
                     double precio = datos.get(1).getAsDouble(); // Obtener el precio en USD
 
                     if (precio > maxPrecio) {
-                        maxPrecio = precio; // Actualizar máximo histórico del año
-                    } else if (precio <= maxPrecio / 2) { // Comprobar si ha caído un 50%
+                        maxPrecio = precio; // Si encontramos un nuevo maximo lo actualizamos
+                    } else if (precio <= maxPrecio / 2) { // Si el precio baja un 50% contamos la caida
                         caidas50++;
                         maxPrecio = precio; // Resetear el máximo para evitar contar la misma caída varias veces
                     }
@@ -129,9 +132,9 @@ public class estadisticas {
                 int subidas50 = 0;
                 double minPrecio = Double.MAX_VALUE; //=1.79E308 //Solo se usa al inicio para asegurarnos de que cualquier precio real sea menor y reemplace su valor
 
-                //Recorremos la lista de precios
+                //Recorremos los precios, dentro del array de precios tengo otros 365 elementos q en realidad son 365 arays [1703721600000, 42000.25]
                 for (JsonElement elemento : precios) {
-                    JsonArray datos = elemento.getAsJsonArray();//Extrae el array de cada dia
+                    JsonArray datos = elemento.getAsJsonArray();//cambio el tipo de elemento a array para poder usar el get y poder extraer el precio USD
                     double precio = datos.get(1).getAsDouble(); //Obtiene el precio en USD ya que el 0 es el timestamp [1703721600000, 42000.25]
 
                     if (precio < minPrecio) {  
@@ -203,7 +206,7 @@ public class estadisticas {
                 // Convertir la respuesta JSON en un objeto JsonObject
                 JsonObject jsonObject = JsonParser.parseString(respuesta).getAsJsonObject();
                 
-                // Extraer el objeto "bitcoin"
+                // Extraer el objeto "bitcoin" que contiene los datos que me interesan
                 JsonObject bitcoinData = jsonObject.getAsJsonObject("bitcoin");
                 
                 // Obtener el valor del volumen de transacciones en 24h
@@ -259,7 +262,7 @@ public class estadisticas {
         		datosAExportar = maxMinBtc(api);
         		System.out.println(datosAExportar);
         		break;
-        	case 9:
+        	case 8:
         		datosAExportar = VolTransacciones(api);
         		System.out.println(datosAExportar);
         		break;
@@ -294,7 +297,5 @@ public class estadisticas {
 
     }
 
-	
-	
 
 }

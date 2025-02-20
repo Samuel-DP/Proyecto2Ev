@@ -21,7 +21,7 @@ public class Api {
             // Verificar el código de respuesta
             int responseCode = conn.getResponseCode(); //se obtiene el codigo de respuesta HTTP
             if (responseCode != 200) { 
-                throw new RuntimeException("Error en la conexión: " + responseCode); //Algo salio mal en la conexion y muestra el error relacionado con el servidor
+                System.out.println("Error en la conexión: " + responseCode); //Algo salio mal en la conexion y muestra el error relacionado con el servidor
             }
 
             // Leer la respuesta
