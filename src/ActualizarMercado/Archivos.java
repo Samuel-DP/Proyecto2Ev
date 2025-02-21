@@ -30,18 +30,19 @@ public class Archivos {
         
     public static void guardarEnPDF(String nombreArchivo, String contenido) {
         try {
-            File file = new File(nombreArchivo);
+            File file = new File(nombreArchivo); //se crea un objeto file
 
             if (file.exists()) {
                 // Leer el contenido existente del PDF
                 PdfReader reader = new PdfReader(nombreArchivo);
                 PdfDocument pdfDoc = new PdfDocument(reader);
-                StringBuilder contenidoExistente = new StringBuilder();
+                StringBuilder contenidoExistente = new StringBuilder(); //se usa para almacenar texto extraido del pdf
 
-                int totalPaginas = pdfDoc.getNumberOfPages();
+                int totalPaginas = pdfDoc.getNumberOfPages(); //obtiene el nº total de paginas
                 for (int i = 1; i <= totalPaginas; i++) {
-                    contenidoExistente.append(PdfTextExtractor.getTextFromPage(pdfDoc.getPage(i))).append("\n");
-                }
+                    contenidoExistente.append(PdfTextExtractor.getTextFromPage(pdfDoc.getPage(i))).append("\n"); //Extrae el texto de la pagina actual y lo añade a contenidoexistente 
+                } 
+                //Al final  de este bucle contenidoexistente contendra todo el texto del PDF original
 
                 pdfDoc.close();
                 reader.close();
@@ -53,14 +54,14 @@ public class Archivos {
 
                 // Agregar el contenido previo y el nuevo contenido
                 document.add(new Paragraph(contenidoExistente.toString()));
-                document.add(new Paragraph("\n\n")); // Espaciado
+                document.add(new Paragraph("\n\n")); 
                 document.add(new Paragraph(contenido));
 
                 document.close();
                 System.out.println("Datos añadidos correctamente a " + nombreArchivo);
 
             } else {
-                // Si el archivo no existe, simplemente creamos uno nuevo
+                // Si el archivo no existe, creamos uno nuevo
                 PdfWriter writer = new PdfWriter(nombreArchivo);
                 PdfDocument pdf = new PdfDocument(writer);
                 Document document = new Document(pdf);

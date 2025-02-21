@@ -5,12 +5,10 @@ import java.net.URL;
 import java.util.Scanner;
 import java.io.IOException;
 
-public class Api {
-	
-    // Método para conectar con la API
+public class Api { 
 	
 	//String endpoint es la URL de los datos que queremos obtener
-    public String getApiData(String endpoint) { // este metodo devuelve una string con los datos de la api
+    public String getApiData(String endpoint) { 
         try {
             // Crear una conexión a la URL
             URL url = new URL(endpoint); //Creo un objeto url con la direccion (endopoint) como parametro
@@ -21,18 +19,17 @@ public class Api {
             // Verificar el código de respuesta
             int responseCode = conn.getResponseCode(); //se obtiene el codigo de respuesta HTTP
             if (responseCode != 200) { 
-                System.out.println("Error en la conexión: " + responseCode); //Algo salio mal en la conexion y muestra el error relacionado con el servidor
+                System.out.println("Error en la conexión: " + responseCode); 
             }
 
             // Leer la respuesta
-            StringBuilder informacion = new StringBuilder(); //creo un objeto de Stringbuilder para almacenar la infomacion recibida desde la api
+            StringBuilder informacion = new StringBuilder(); 
             Scanner sc = new Scanner(url.openStream());// Abre un flujo de datos desde la api (url.openStream()) y utiliza scanner para leerlos linea por linea
                 while (sc.hasNext()) { //mientras el flujo de datos tenga informacion
                     informacion.append(sc.nextLine()); //cada linea de flujo se añadirá al StringBuilder
                 }
             
-
-            return informacion.toString(); //una vez toda la info ha sido leida y almacenada en el StringBuilder se convierte en un String y se devuelve como resultado del metodo
+            return informacion.toString(); 
 
         } catch (IOException e) {
             System.out.println("Error al obtener los datos de la api " + e.getMessage());
